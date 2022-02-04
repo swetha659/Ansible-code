@@ -1,2 +1,18 @@
 ---
 - name: My first playbook
+  hosts: localhost
+  #gather_fact: no
+  vars:
+    user: swetha
+    password: swetha123
+  tasks:
+  - name: printing username
+    debug:
+      msg: "{{ user }}"
+  - name: printing password
+    debug:
+      msg: "{{ password }}"    
+    register: print
+  - name: printing last task output
+    debug: 
+      msg: '{{ print }}'
