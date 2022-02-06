@@ -1,0 +1,16 @@
+---
+name: Play1
+hosts: localhost
+tasks:
+   - name: Execute command 'date'
+     command: date
+   - name: Execute script on server
+     command: playbook1.yml
+   - name: Install httpd service
+     yum:
+       name: httpd
+       state: present
+   - name: Start web server
+     service:
+       name: httpd
+       state: started 
