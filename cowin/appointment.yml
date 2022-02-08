@@ -1,0 +1,59 @@
+---
+- name: cowin playbook
+  hosts: localhost
+  vars: 
+    state_id: 16
+    mobile_number: 9666777659
+    date: 07-02-2022
+    pin_code: 500085
+  tasks:
+  - name: getting state list
+    uri:
+      url: https://cdn-api.co-vin.in/api/v2/admin/location/states
+      method: GET
+      status_code: 200
+    register: state_details
+    tags: state_list
+  - name: Printing state list
+    debug:
+      msg: '{{ state_details }}'
+    tags: state_list
+  - name: getting specific state details
+    uri:
+      url: https://cdn-api.co-vin.in/api/v2/admin/location/districts/{{ state_id }}
+      method: GET
+      status_code: 200
+    register: state_specific_detail
+    tags: state_specific
+  - name: Printing specific state list
+    debug:
+      msg: '{{ state_specific_detail }}'
+    tags: state_specific  
+  - name: "Generate OTP"
+    uri:
+      url: "https://cdn-api.co-vin.in/api/v2/auth/public/generateOTP"
+      validate_certs: no
+      method: "POST"
+      body_format: json
+      body:
+        {
+          "mobile": "{{ mobile_number }}"
+        } 
+    register: otp_details
+    tags: generate_otp
+  - debug:
+      msg: "{{ otp_details }}"
+    tags: generate_otp
+  - name: getting availability details
+    uri:
+      url: https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByPin?pincode={{ pin_code }}&date={{ date }}
+      method: GET
+      status_code: 200
+    register: availability_details
+    tags: availability_details
+  - name: Printing availability details
+    debug:
+      msg: '{{ availability_details.json }}'  
+    tags: availability_details  
+     
+ 
